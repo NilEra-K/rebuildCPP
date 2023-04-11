@@ -1,6 +1,6 @@
 /**
  * @file 01_SimplePart.cpp
- * @author your name (you@domain.com)
+ * @author NilEra (nilera0001@gmail.com)
  * @brief 简单复习一下C++的语法知识, SimplePart是简单的部分, 过于简单的不展开叙述
  * @version 0.1
  * @date 2023-04-08

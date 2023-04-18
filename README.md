@@ -5,6 +5,7 @@
 
 ### 板块完成度
 - [Finished] 01. Sample Part 简单部分
-- [Doing] 02. Advanced Section 提高部分
-
+- [Finished] 02. Advanced Section 提高部分
+- [Doing] 03. Object Part 对象部分
+- [Doing] 04. IO Stream I/O流部分
 

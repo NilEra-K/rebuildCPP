@@ -254,6 +254,48 @@ int main()
 }
 #endif
 
+#if 0
+// 上方 String代码中有 String& function()的用法
+// 本部分将对 class& 用法进行叙述 (e.g. string&) 
+// 当返回类型为 A& 时, 没有调用拷贝构造函数, 返回的是当前对象本身(即引用), 而不是拷贝出来的副本.
+// C++的类相关知识中, 关于函数的返回值为 *this 与 this 的情况
+// return *this 返回的是当前对象的克隆或者本身(若返回类型为A, 则是克隆, 若返回类型为 A&, 则是本身).
+// return this  返回当前对象的地址(指向当前对象的指针)
+
+// 脑抽了, 以为 class& 是很高端的用法, 忽视了class& function() 和 class &function()这俩东西实际上是没啥区别的
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+using namespace std;
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+using namespace std;
+
+class A{
+public:
+	int x;
+	A() {x = 0;}
+    //这里写了一个拷贝构造函数，所以得再提供一个构造函数
+	A(const A &a) {x = a.x; printf("copy constructor is called\n");}
+
+	// * 如果显示的写了一个普通的构造函数，会隐藏默认的无参构造函数
+	// * 如果显示的写了一个拷贝构造函数，会隐藏默认的无参构造函数和默认构造函数
+	// * 如果显示的写了一个析构函数，会隐藏默认的析构函数
+	A& get() {return *this;}
+};
+
+int main()
+{
+	A a;
+	a.x = 4;
+	if (a.x == a.get().x){cout << a.x << endl;}
+    else{cout << "no" << endl;}
+	if (&a == &a.get()){cout << "地址" << endl;}
+	else{cout << "不是地址" << endl;}
+	return 0;
+}
+#endif
+
 #if 1
 // 指针
 // & 取地址符 
@@ -281,8 +323,6 @@ int main()
     int *p;
     p = &x;
     y = *p;     //y = x
-
-
     return 0;
 }
 #endif

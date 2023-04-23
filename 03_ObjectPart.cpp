@@ -138,7 +138,7 @@ int main()
 }
 #endif
 
-#if 1
+#if 0
 // 共用体 union
 // 几个不同的变量共享同一个地址开始的内存空间。
 
@@ -177,9 +177,91 @@ int main()
 #endif
 
 #if 0
+// 类和对象
+// 类的语法结构
+// class 类名
+// {
+// 	public:
+// 		公有数据成员;
+// 		公有成员函数;
+// 	private:
+// 		私有数据成员;
+// 		私有成员函数;
+// 	protected:
+// 		保护数据成员;
+// 		保护成员函数;
+// };
 #include <iostream>
 using namespace std;
+// 和Java C#不同的是: C++中 public, private, protected只能修饰类的成员, 不能修饰类, C++中的类没有共有私有之分
+// 类内部没有访问权限的限制, 都可以互相访问
+// 在C++中用class定义的类中, 其成员的默认存取权限是private
+class Person{
+public:
+	// 无参构造函数
+	Person();
+	// 带有默认参数的构造函数
+	Person(string sex = "男");
+	Person(int year, string name);
+	Person(int year, string sex, string name);
+	Person(Person &p);
+	void show();
+	~Person();
+private:
+	int year;
+	string sex;
+	string name;
+};
 
+
+Person::Person(){}
+Person::Person(int year, string name){
+	this->year = year;
+	this->name = name;
+}
+// 带参数初始化表的构造函数
+// 类名::构造函数名(参数列表):参数初始化表
+// {
+// 	函数体;
+// }
+// 参数初始化列表的一般形式:
+// 参数名1(初值1),参数名2(初值2),...,参数名n(初值n)
+Person::Person(int year, string sex, string name): year(year), sex(sex), name(name)
+{
+	cout << year << ' ' << sex << ' ' << name << endl;
+	cout << this->year << ' ' << this->sex << ' ' << this->name << endl;
+}
+Person::~Person(){}
+// 栈区: 存放函数的参数值, 局部变量等, 由编译器自动分配和释放, 通常在函数执行完后就释放, 其操作方式类似于数据结构中的栈.
+// 栈内存分配运算内置于CPU的指令集, 效率很高, 但是分配的内存量有限, 比如iOS中栈区的大小是 2M.
+Person p(123, "yar");//在栈上创建对象
+
+// 堆区: 就是通过new, malloc, realloc分配的内存块, 编译器不会负责它们的释放工作, 需要用程序区释放. 
+// 分配方式类似于数据结构中的链表. '内存泄漏' 通常说的就是堆区.
+Person *pp = new Person(234,"yar");//在堆上创建对象
+
+Person tp(10, "男", "张三");
+void Person::show()
+{
+	cout << "year = " << this->year << endl;
+	cout << "sexx = " << this->sex << endl;
+	cout << "name = " << this->name << endl;
+}
+
+int main()
+{
+	tp.show();
+    return 0;
+}
+#endif
+
+
+#if 1
+#include <iostream>
+using namespace std;
+// 以关键字static开头的成员为静态成员, 多个类共享.
+// static 成员变量属于类，不属于某个具体的对象
+// 静态成员函数只能访问类中静态数据成员
 int main()
 {
     return 0;
@@ -196,3 +278,35 @@ int main()
 }
 #endif
 
+
+#if 0
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    return 0;
+}
+#endif
+
+
+#if 0
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    return 0;
+}
+#endif
+
+
+#if 0
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    return 0;
+}
+#endif

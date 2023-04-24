@@ -255,13 +255,38 @@ int main()
 }
 #endif
 
-
-#if 1
+#if 0
 #include <iostream>
 using namespace std;
 // 以关键字static开头的成员为静态成员, 多个类共享.
 // static 成员变量属于类，不属于某个具体的对象
 // 静态成员函数只能访问类中静态数据成员
+class TestClass
+{
+private:
+	static int statA;
+	int noStat;
+public:
+	TestClass();
+	void visit_1();
+	static int visit_2();
+	~TestClass();
+};
+
+TestClass::TestClass(){}
+void TestClass::visit_1(){
+	cout << statA << ' ' << noStat << endl;
+}
+
+int TestClass::visit_2(){
+	// 下列语句报错: 非静态成员引用必须与特定对象相对
+	//                           v  
+	// cout << statA << ' ' << noStat << endl;
+	cout << statA << endl;
+}
+
+TestClass::~TestClass(){}
+
 int main()
 {
     return 0;
@@ -269,31 +294,154 @@ int main()
 #endif
 
 #if 0
+// Friend 友元
+// Blog: https://blog.csdn.net/weixin_46098577/article/details/116596183
 #include <iostream>
 using namespace std;
+// 全局函数做友元
+class Building{
+	// 告诉编译器 laoWang 全局函数是 Building类的好朋友, 可以访问 Building对象的私有成员
+	friend void laoWang1(Building *building);
+	friend void laoWang2(Building &building);
+	friend void laoWang3(Building building);
+public:
+	Building()
+	{
+		m_SittingRoom = "客厅";
+		m_BedRoom = "卧室";
+	}	
+	string m_SittingRoom;	// 客厅
+private:
+	string m_BedRoom;		// 卧室
+};
+
+//全局函数
+void laoWang1(Building *building)
+{
+	cout << "隔壁老王 全局函数 正在访问: (地址传递) " << building->m_SittingRoom << endl;
+	// 在未声明友元时, building->m_BedRoom语句报错, [ERROR] 成员 "Building::m_BedRoom"不可访问
+	cout << "隔壁老王 全局函数 正在访问: (地址传递) " << building->m_BedRoom << endl;
+}
+
+void laoWang2(Building &building)
+{
+	cout << "隔壁老王 全局函数 正在访问: (引用传递) " << building.m_SittingRoom << endl;
+	// 在未声明友元时, building->m_BedRoom语句报错, [ERROR] 成员 "Building::m_BedRoom"不可访问
+	cout << "隔壁老王 全局函数 正在访问: (引用传递) " << building.m_BedRoom << endl;
+}
+
+void laoWang3(Building building)
+{
+	cout << "隔壁老王 全局函数 正在访问: (值传递) " << building.m_SittingRoom << endl;
+	// 在未声明友元时, building->m_BedRoom语句报错, [ERROR] 成员 "Building::m_BedRoom"不可访问
+	cout << "隔壁老王 全局函数 正在访问: (值传递) " << building.m_BedRoom << endl;
+}
+
+void test()
+{
+	Building building;
+	laoWang1(&building);
+	laoWang2(building);
+	laoWang3(building);
+}
 
 int main()
 {
+	test();
+    return 0;
+}
+#endif
+
+#if 0
+// 类做友元
+#include <iostream>
+using namespace std;
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+// 类作友元
+class Building;
+
+class LaoWang{
+public:
+	LaoWang();
+	void visit();	//参观函数  访问Building中的属性
+	Building *building;
+};
+
+// 房屋类
+class Building{
+	// 告诉编译器, LaoWang类是 Building类的好朋友, 可以访问 Building类的私有成员
+	friend class LaoWang;
+	// 成员函数做友元
+	// friend void LaoWang::visit1();
+public:
+	Building();
+	string m_SittingRoom;	// 客厅
+private:
+	string m_BedRoom;		// 卧室
+};
+
+// 类外定义成员函数
+Building::Building(){
+	m_SittingRoom = "客厅";
+	m_BedRoom = "卧室";
+}
+
+LaoWang::LaoWang(){
+	// 创建建筑物对象
+	building = new Building;
+}
+
+void LaoWang::visit(){
+	cout << "隔壁老王LaoWang类正在访问: " << building->m_SittingRoom << endl;
+	cout << "隔壁老王LaoWang类正在访问: " << building->m_BedRoom << endl;
+}
+
+void test(){
+	LaoWang lw;
+	lw.visit();
+}
+
+int main()
+{
+	test();
     return 0;
 }
 #endif
 
 
-#if 0
+#if 1
 #include <iostream>
 using namespace std;
+// 继承和派生
+// 继承和派生是面向对象程序设计的两个重要特性, 继承是从已有的类得到已有的特性
+// 已有的类被称为基类或者父亲, 新类被称为派生类或子类
+// 继承与派生从不同角度说明类之间的关系, 这种关系包含访问机制, 多态和重载等
 
-int main()
-{
-    return 0;
-}
-#endif
+// 继承方式为可选项, 默认为 private
+// class 派生类名:[继承方式] 基类名{
+// 		派生类新增加的成员声明;
+// };
 
+// [继承方式]
+// Public		基类的 public成员和 protected成员的访问属性保持不变, 私有成员不可见.
+// Private		基类的 public成员和 protected成员成为private成员, 只能被派生类的成员函数直接访问, 私有成员不可见.
+// Protected	基类的 public成员和 protected成员成为protected成员, 只能被派生类的成员函数直接访问, 私有成员不可见.
+class CEmployee{
+public:
+	int m_ID;
+	char m_Name[128];
+	char m_Depart[128];
+};
 
-#if 0
-#include <iostream>
-using namespace std;
-
+class COperator: public CEmployee{
+public:
+	char m_Password[128];
+	bool Login();
+};
 int main()
 {
     return 0;

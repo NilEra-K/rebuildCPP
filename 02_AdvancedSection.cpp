@@ -296,7 +296,7 @@ int main()
 }
 #endif
 
-#if 1
+#if 0
 // 指针
 // & 取地址符 
 // * 指针运算符(间接运算符), 其后是指针变量, 表示该指针变量所指向的变量.
@@ -327,5 +327,52 @@ int main()
 }
 #endif
 
+// 代码风格进行小调整
+#if 1
+#include <iostream>
+#include <stdio.h>
+
+using namespace std;
+int main(void){
+    int a[10] = {1, 2, 3, 4, 5};
+    printf("sizeof(a) = %lu\n", sizeof(a));
+    printf("sizeof(a[0]) = %lu\n", sizeof(a[0]));
+    printf("sizeof(a) / sizeof(a[0]) = %lu\n", sizeof(a)/sizeof(a[0]));
+
+    // 不好的代码
+    for(int i = 0; i < 5; i++){
+        a[i] *= 100;
+    }
+    for(int i = 0; i < 5; i++){
+        printf("%d ", a[i]);
+    }
+    printf("\n");
+
+    // 较好的代码
+    int size = sizeof(a)/sizeof(a[0]);
+    for(int i = 0; i < size; i++){
+        printf("%d ", a[i]);
+    }
+    printf("\n");
+
+    // 关于动态数组
+    // C99 支持动态数组, 亦称变长数组, 即在定义数组时通过变量指定数组的长度
+    //////// 注意: 动态数组不可初始化 -> 初始化会导致 [E rror]
+    // 动态数组的使用会导致一些问题 -> n的值在编译阶段不确定 (gcc x.c -o x)
+
+    int n;
+    scanf("%d", &n);
+    int b[n];           // C99 动态数组
+    for(int i = 0; i < n; i++){
+        b[i] = i + 1;
+    }
+
+    for(int i = 0; i < n; i++){
+        printf("%d ", b[i]);
+    }
+    printf("\n");
+    return 0;
+}
+#endif
 
 

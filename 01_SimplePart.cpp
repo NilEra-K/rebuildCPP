@@ -199,7 +199,7 @@ int main()
 #endif
 
 
-#if 1
+#if 0
 // 字符数组
 // 动态创建数组以及指针的一些知识
 #include <iostream>
@@ -256,4 +256,22 @@ int main()
 }
 #endif
 
+#if 1
+#include <iostream>
+
+using namespace std;
+
+int main(void)
+{
+    int a = 1;
+label:  // 让程序跳到 label 位置 自上而下运行
+    printf("1\n");
+    if(a==1){
+        a = 0;
+        goto label;
+    }
+    printf("2\n");
+    return 0;
+}
+#endif
 

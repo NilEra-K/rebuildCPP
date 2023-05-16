@@ -256,7 +256,7 @@ int main()
 }
 #endif
 
-#if 1
+#if 0
 #include <iostream>
 
 using namespace std;
@@ -274,4 +274,25 @@ label:  // 让程序跳到 label 位置 自上而下运行
     return 0;
 }
 #endif
+
+#if 1
+// Static Demo
+#include <iostream>
+#include "01_staticDemo.cpp"
+using namespace std;
+extern int g_a;
+extern void print_1(void);
+extern void print_2(void);
+
+int main(void)
+{
+    printf("main : g_a = %d\n", g_a);
+    printf("main : g_a = %d\n", g_a);
+    print_1();
+    print_2();
+    return 0;
+}
+#endif
+
+
 

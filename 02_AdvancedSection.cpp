@@ -328,7 +328,7 @@ int main()
 #endif
 
 // 代码风格进行小调整
-#if 1
+#if 0
 #include <iostream>
 #include <stdio.h>
 
@@ -375,4 +375,103 @@ int main(void){
 }
 #endif
 
+#if 0
+/* 指针 Pointer */
+#include <iostream>
+// 地址: 32位系统中占 4字节; 64位系统中占 8字节
+/* 1字节 = 8位 */
+/* 1字 = 2字节 */
+/* 00000000 00000000 00000000 00000001 -> 1 -> 0x00000001*/
+/* 32位 -> int* pa; -> sizeof(pa) = 4 */
+/* 64位 -> int* pa; -> sizeof(pa) = 8 */
 
+/* 既然指针类型的大小不是 4字节就是 8字节, 那么指针变量为什么不用相同的数据类型存储 */
+// 数据类型的作用是指向的内存数据类型
+
+using namespace std;
+int main(void){
+    /* 野指针和空指针 */
+    /* 野指针: 即指向不可用内存区域的指针 */
+    /* 操作野指针将导致未定义的结果, 构成潜在的风险 */
+    /* 产生野指针的原因: 指针变量没有初始化; 指针变量所指向的内存已被释放(malloc) */
+    
+    /* 空指针: 即值为 0的指针, 可用宏 NULL表示 */
+    /* 任何情况下, 操作空指针的结果都是确定的 -> 程序崩溃 */
+    /* 空指针比野指针跟适合作为指针有效性的判断根据 */
+    int* p = NULL;
+    printf("%#x\n", *p);    // 程序崩溃
+    *p = 100;               // 程序崩溃
+    return 0;
+}
+#endif 
+
+#if 0
+#include <iostream>
+using namespace std;
+/* 指针运算 */
+// 指针变量 + n => 指针变量 + n*sizeof(数据类型)
+int main(void){
+    char ch = 'a';
+    char* pch = &ch;
+    printf("%p\n", pch);
+    pch++;
+    printf("%p\n", pch);
+}
+#endif
+
+#if 0
+#include <iostream>
+using namespace std;
+/* 指针和函数的关系 */
+// 1. 指针做函数的参数
+//    指针 - 参数 -
+//    实参变量的地址 - 直接访问实参变量的值
+//    形参变量获取了实参变量的地址 -> 访问实参变量
+/* ============================================== */
+// 2. 指针做函数的返回值 -> 指针函数(函数返回一个地址)
+//    
+
+// 简单交换函数, 无法真正的实现交换
+void swap(int x, int y){
+    int tmp = x;
+    x = y;
+    y = tmp;
+}
+
+// 指针交换函数, 实现了真正的交换
+void swap_p(int* pa, int* pb){
+    int tmp = *pa;      // tmp = *pa = a = 10
+    *pa = *pb;          // *pa = a = *pb = b = 20
+    *pb = tmp;          // *pb = b = tmp = 10
+}
+
+int* A(void){
+    int a = 100;
+    // 无法返回局部变量地址;
+    return &a;      // 函数结束, 变量生命周期结束, 分配给 a的内存就被释放了
+}
+
+int main(void){
+    int a = 10, b = 20;
+    swap(a, b);
+    printf("a = %d, b = %d\n", a, b);
+
+    int* p = NULL;
+    p = A();    // 调用指针函数A并且使用
+    return 0;
+}
+#endif
+
+#if 1
+#include <iostream>
+using namespace std;
+
+int main(void){
+    int a[] = {1, 2, 3, 4};
+    // 数组名是数组的首地址, 所以不需要加 '&' 引用符
+    cout << a << endl;
+    int* pa = a;
+    return 0;
+}
+
+#endif

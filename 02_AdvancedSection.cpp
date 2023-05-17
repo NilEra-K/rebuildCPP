@@ -640,6 +640,9 @@ int main(void){
     // 这种方式不能通过 pstr修改指针指向的字符串, 例如 pstr[1] = 'E';
     char* pstr = "Hello";   // pstr保存字符串的首地址
     cout << *pstr << endl;  // 输出: "H"
+    cout << pstr << endl;   // 输入: "Hello World!" -> 打印 pstr指向的字符串
+    cout << pstr[0] << pstr[1] << pstr[2] << pstr[3] << pstr[4] <<endl;
+    cout << *(pstr + 0) << *(pstr + 1) << *(pstr + 2) << *(pstr + 3) << *(pstr + 4) << endl;
     // pstr[1] = 'E';       // Segmentation Fault 编译器不报错, 执行时报错
     // 原因: 通过字符指针声明的变量指向 "内存的 `常量区` ", 这一部分不允许修改
     
@@ -651,6 +654,20 @@ int main(void){
     char str[] = "Hello World!\n";
     cout << str;
 
+    /* 字符串的输入输出 */
+    // scanf("%s", str_name);
+    // char* gets(char* s);
+    char s_1[100] = {0};
+    char s_2[100] = {0};
+    scanf("%s", s_1);   // 这里不需要引用符 "&", 因为 s本身就相当于地址了
+                        // 遇到空格结束 <- 可以使用 gets() 解决这一问题
+    gets(s_2);          // [WARNING] gets 不会限制字符串的读取长度, 过多的读取字符串会导致内存中的其他数据被覆盖
+                        // fgets() -> 用于文件操作
+                        // gets_s() -> C11标准支持
+    printf("=======================\n");
+    printf("s_1 is %s\n", s_1);
+    printf("s_2 is ");
+    puts(s_2);          // 输出到终端上, 并自动追加一个 '\n'
     return 0;
 }
 

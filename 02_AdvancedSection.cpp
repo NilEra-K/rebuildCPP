@@ -532,7 +532,7 @@ int main(void){
 }
 #endif
 
-#if 1
+#if 0
 #include <iostream>
 using namespace std;
 
@@ -553,7 +553,107 @@ int main(void){
     printf("%#x\n", *p2);       // 0x5678
     p2++;
     printf("%#x\n", *p2);       // 0x1234
+
+    // 获得中间两个字节
+    printf("%#x\n", *(short*)((char*) &a + 1));     // 0x3456
     return 0;
 }
 #endif
+
+#if 0
+#include <iostream>
+using namespace std;
+
+int main(void){
+    int a = 0x12345678;
+    void* p = (void*) &a;
+    // 任意 1字节
+    char* p1 = (char*) p;
+    printf("%#x\n", *p1);
+    p1++;
+    printf("%#x\n", *p1);
+    p1++;
+    printf("%#x\n", *p1);
+    p1++;
+    printf("%#x\n", *p1);
+    cout << "===============" << endl;
+
+    // 任意 1字节, 直接访问
+    printf("%#x\n", *(char*)(p + 0));
+    printf("%#x\n", *(char*)(p + 1));
+    printf("%#x\n", *(char*)(p + 2));
+    printf("%#x\n", *(char*)(p + 3));
+    cout << "===============" << endl;
+
+    // 任意 2字节
+    short* p2 = (short*) p;
+    printf("%#x\n", *p2);
+    p2++;
+    printf("%#x\n", *p2);
+    cout << "===============" << endl;
+
+    // 任意 4字节
+    int* p3 = (int*) p;
+    printf("%#x\n", *p2);
+    p3++;
+    printf("%#x\n", *p2);
+    cout << "===============" << endl;
+    return 0;
+}
+#endif
+
+#if 0
+#include <iostream>
+using namespace std;
+/* 地址 */ 
+// 在 32位系统中 -> 4字节
+// 在 64位系统中 -> 8字节
+// ==============> 因此我们可以使用 unsigned long类型数据存储指针
+int main(void){
+    int a = 100;
+    // unsigned long的变量 p来存储变量 a的地址
+    unsigned long p = (unsigned long) &a;
+    *(int*) p = 521;
+    printf("a = %#x\n", a);
+    printf("*(int*) p = %#x\n", *(int*) p);
+    return 0;
+}
+#endif
+
+#if 1
+#include <iostream>
+using namespace std;
+/* 字符串补充 */
+// 字符串就是一组字符组成, 用双引号括起来表示, 用字符 '\0' 作为结束符(ASCII码也为0)
+int main(void){
+    // 下面两句等价
+    printf("%s\n", "Hello World!\0");
+    printf("%s\n", "Hello World!");
+    printf("%s\n", "Hello World!\0[Don't Out]");    // Hello World!
+    
+    // 数据库 - 语句可以放在多行里, 可以避免太长
+    printf("%s\n", "Hello " "World" "!");           // Hello World!
+
+    /* 字符串的表示 */
+    // 01. 字符指针方式 char* pstr = "Hello";
+    // pstr -> 指针变量 -> 4/8字节 -> 永远存储地址 -> 字符串第一个字符的地址
+    // 这种方式不能通过 pstr修改指针指向的字符串, 例如 pstr[1] = 'E';
+    char* pstr = "Hello";   // pstr保存字符串的首地址
+    cout << *pstr << endl;  // 输出: "H"
+    // pstr[1] = 'E';       // Segmentation Fault 编译器不报错, 执行时报错
+    // 原因: 通过字符指针声明的变量指向 "内存的 `常量区` ", 这一部分不允许修改
+    
+    // 02. 字符数组方式 str[] = {'H', 'e', 'l', 'l', 'o', '\0'}; 或者 str[] = "Hello";
+    // 数组名即字符串首地址
+    // 有两种初始化方式: 如上
+    // 使用 str[] = {'H', 'e', 'l', 'l', 'o'}; 方式初始化时需要手动注明结束符 '\0', 否则就是一个数组
+    // 可以任意修改
+    char str[] = "Hello World!\n";
+    cout << str;
+
+    return 0;
+}
+
+
+#endif 
 

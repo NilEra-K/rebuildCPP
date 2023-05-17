@@ -462,7 +462,7 @@ int main(void){
 }
 #endif
 
-#if 1
+#if 0
 #include <iostream>
 using namespace std;
 
@@ -471,7 +471,89 @@ int main(void){
     // 数组名是数组的首地址, 所以不需要加 '&' 引用符
     cout << a << endl;
     int* pa = a;
+    cout << a[0] << ' ' << a[1] << ' ' << a[2] << ' ' << a[3] << endl;
+    cout << *(a + 0) << ' ' << *(a + 1) << ' ' << *(a + 2) << ' ' << *(a + 3) << endl;
+    cout << *(pa + 0) << ' ' << *(pa + 1) << ' ' << *(pa + 2) << ' ' << *(pa + 3) << endl;
+    cout << pa[0] << ' ' << pa[1] << ' ' << pa[2] << ' ' << pa[3] << endl;
     return 0;
 }
-
 #endif
+
+#if 0
+#include <iostream>
+using namespace std;
+/* void* 泛型指针 */
+// 仅存储内存地址, 不指定目标类型
+// 例如: void* p = &a; // 通过 p并不能知道 a的类型
+// 目标类型不确定, 不能直接解引用
+// 使用前必须进行数据类型转换
+// 泛型指针做指针计算, 以 1字节为单位
+int main(void){
+    int a = 100;
+    void* p = &a;
+    // printf("%d\n", *p);     // [ERROR] 表达式必须是指向完整类型的指针
+    int* p1 = (int*) p;
+    printf("%d\n", *p1);
+    *p1 = 101;
+    printf("%d\n", *p1);
+    return 0;
+}
+#endif
+
+#if 0
+/* 常量指针和指针常量 */
+#include <iostream>
+using namespace std;
+
+/* 常量指针 指针该变量保存的地址可以改变, 指向的内存值无法改变 */
+// const int* 或 int const*
+
+/* 指针常量, 指针变量保存的地址不能修改, 内存值可以修改 */
+// int* const
+
+/* 常量指针常量, 指针变量保存的地址和内存值都不可以进行修改 */
+// const int* const
+
+int main(void){
+    // 常量指针 
+    int a = 10;
+    int b = 20;
+    const int* p = &a;
+    // *p = 20;    // [ERROR] 表达式必须是可修改的左值 -> 指向的内存值无法修改
+    p = &b;        // [SUCCESS] -> 指向的地址可以修改
+
+    // 指针常量
+    int c = 10;
+    int d = 20;
+    int* const cp = &c;
+    *cp = 20;           // [SUCCSESS] -> 指向的内存值可以修改
+    // cp = &b;         // [ERROR] ->表达式必须是可修改的左值 -> 指向的地址无法修改
+    return 0;
+}
+#endif
+
+#if 1
+#include <iostream>
+using namespace std;
+
+int main(void){
+    int a = 0x12345678;
+    // 指针的强制类型转换
+    char* p1 = (char*) &a;
+    printf("%#x\n", *p1);       // 0x78
+    p1++;
+    printf("%#x\n", *p1);       // 0x56
+    p1++;
+    printf("%#x\n", *p1);       // 0x34
+    p1++;
+    printf("%#x\n", *p1);       // 0x12
+
+    // 通过类型转换访问其中两个字节的内存
+    short* p2 = (short*) &a;
+    printf("%#x\n", *p2);       // 0x5678
+    p2++;
+    printf("%#x\n", *p2);       // 0x1234
+    return 0;
+}
+#endif
+

@@ -620,7 +620,7 @@ int main(void){
 }
 #endif
 
-#if 1
+#if 0
 #include <iostream>
 using namespace std;
 /* 字符串补充 */
@@ -670,7 +670,59 @@ int main(void){
     puts(s_2);          // 输出到终端上, 并自动追加一个 '\n'
     return 0;
 }
-
-
 #endif 
 
+#if 1
+#include <iostream>
+#include <string.h>
+using namespace std;
+/* 字符串函数 */
+// 字符串长度: 
+// · unsigned int strlen(const char* s);    // 记住: char* s存放的一定是一个地址!!!
+// 字符串拷贝: 
+// · char* strcpy(char* dest, const char* src);
+// · char* strncpy(char* dest, const char* src, unsigned int n);
+// 字符串连接:
+// char* strcat(char* dest, const char* src);   // strcat(数组名, 数组名/字符指针/字符串字面值)
+// char* strncat(char* dest, const char* src, unsigned int n);
+// 字符串比较:
+// int strcmp(const char* s1, const char* s2);
+// int strncmo(const char* s1, const char* s2, size_t n);
+int main(void){
+    char* p1 = "Hello World!";
+    char str[100] = "Hello C!";
+    printf("%lu, %lu\n", strlen(p1), strlen(str));
+
+    // strcat(数组名, 数组名/字符指针/字符串字面值)
+    char str1[20] = "Hello ";
+    printf("%s\n", str1);    
+    strcat(str1, "XYZ");        // 将字符串 "XYZ" 拼接到字符串 str1后, 并放入 str1数组中
+    printf("%s\n", str1);
+
+    // strncat()
+    char str2[20] = "Hello ";
+    printf("%s\n", str2);    
+    strncat(str2, "XYZ", 2);    // 将字符串 "XYZ" 的前 n个字符拼接到字符串 str1后, 并放入 str1数组中
+    printf("%s\n", str2);
+
+    // strcpy(数组名, 数组名/字符指针/字符串字面值)
+    // 将后面的字符串拷贝到第一个参数指定的内存中
+    char str3[20] = "Hello Str3";
+    printf("%s\n", str3);
+    strcpy(str3, "123456");     // 将字符串拷贝到 str3数组中
+                                // 原来存储的字符串 "Hello Str3" 消失
+    /* 过程 -> */
+    // +=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+
+    // |  H  |  E  |  L  |  L  |  O  |     |  S  |  T  |  R  |  3  |  \0 | ... |
+    // +=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+
+    // "123456" --> "Hello Str3"
+    // +=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+
+    // |  1  |  2  |  3  |  4  |  5  |  6  |  \0 |  T  |  R  |  3  |  \0 | ... |
+    // +=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+
+    // 这样会覆盖后, 读到第一个 '\0', 意味着字符串结束
+    printf("%s\n", str3);
+    // strncpy() 就类似于 strncat()
+
+    return 0;
+}
+#endif

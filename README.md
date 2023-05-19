@@ -1,10 +1,8 @@
 # rebuildCPP
 ### 重构自己的 C++基础 ······················ Rebuild The Basical Part Of My C Plus Plus
-
-===
-
 - 有一定的 C++基础, 准备进一步提高
 - 过于简单的部分不涉及到代码中
+- Basic 部分持续更新, 遇到值得补充的部分就进行补充
 
 ### 板块完成度
 - [Finished] 01. Sample Part 简单部分

@@ -7,5 +7,6 @@
 - [Finished] 01. Sample Part 简单部分
 - [Doing] 02. Advanced Section 提高部分
 - [Doing] 03. Object Part 类和对象部分
+- [Doing] 04. Data Structure 数据结构部分
 - [Basic] Something Basic 一些很基础但是我忽略掉的
 

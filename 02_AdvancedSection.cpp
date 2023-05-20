@@ -672,10 +672,12 @@ int main(void){
 }
 #endif 
 
-#if 1
+#if 0
 #include <iostream>
 #include <string.h>
 using namespace std;
+
+extern void reverse(char* pstr);
 /* 字符串函数 */
 // 字符串长度: 
 // · unsigned int strlen(const char* s);    // 记住: char* s存放的一定是一个地址!!!
@@ -722,6 +724,54 @@ int main(void){
     // 这样会覆盖后, 读到第一个 '\0', 意味着字符串结束
     printf("%s\n", str3);
     // strncpy() 就类似于 strncat()
+
+    // strcmp(字符串, 字符串);
+    // 从左边到右边一个字符一个字符比较, 直到不相等或者字符串结束
+    // 如果字符串相等, 返回 0; 如果第一个字符串大, 返回 1; 如果第二个字符串大, 返回 -1;
+    int ret = 0;
+    ret = strcmp("abc", "abc");
+    printf("abc : abc = %d\n", ret);
+    ret = strcmp("aBc", "abc");
+    printf("aBc : abc = %d\n", ret);
+    ret = strcmp("abc", "abC");
+    printf("abc : abC = %d\n", ret);
+
+    // 定义 reverse()函数实现字符串的反转
+    char rstr[20] = "HELLO WORLD!";
+    printf("%s\n", rstr);
+    reverse(rstr);
+    printf("%s\n", rstr);
+    return 0;
+}
+
+void reverse(char* pstr){
+    int len = strlen(pstr);     // 获取有效字符个数
+    for(int i = 0; i< len/2; i++){
+        char c = pstr[i];
+        pstr[i] = pstr[len - i - 1];
+        pstr[len - i - 1] = c;
+    }
+}
+#endif
+
+#if 1
+#include <iostream>
+using namespace std;
+/* 字符串数组 */
+// 二位数组形式的字符串数组
+// char sa[][10] = {"beijing", "tianjin", "shanghai", "chongqing"};
+//       +=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+
+// sa[0] |  b  |  e  |  i  |  j  |  i  |  n  |  g  |  \0 |  \0 |  \0 |
+//       +=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+
+// sa[1] |  t  |  i  |  a  |  n  |  j  |  i  |  n  |  \0 |  \0 |  \0 |
+//       +=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+
+// sa[2] |  s  |  h  |  a  |  n  |  g  |  h  |  a  |  i  |  \0 |  \0 |
+//       +=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+
+// sa[3] |  c  |  h  |  o  |  n  |  g  |  q  |  i  |  n  |  g  |  \0 |
+//       +=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+
+// sa[.] | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+//       +=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+
+int main(void){
 
     return 0;
 }

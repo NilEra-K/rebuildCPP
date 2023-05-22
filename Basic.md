@@ -25,7 +25,6 @@
         gcc hello.o -o hello
 ```
 
-===
 
 #### 一些小技巧
 1. 在 VIM 中使用 `SHIFT + V` 全选代码, 此时按`"="`可以自动缩进代码
@@ -34,6 +33,7 @@
 4. 函数声明的时候一般要加 `extern` 关键字
 5. 一般定义全局变量时, 要加一个 `g_` , 例如 `g_x` , `g_` 表示 `global` , 这是一个好的编程习惯
 6. 在 Linux 编译多文件时, 例如: var.c负责变量和函数的定义, var1负责调用,使用 `gcc var.c var1.c -o var` 命令来进行编译
+7. 当程序中用到一个宏参数, 但是并没有用 `#define` 定义时, 可以使用 ` gcc -D[宏参数]=[参数值] filename -o outname`, 例如: ` gcc -DSIZE=5 -DMAX=10 hello.c o hello`
 
 
 

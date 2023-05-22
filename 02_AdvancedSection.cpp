@@ -754,12 +754,13 @@ void reverse(char* pstr){
 }
 #endif
 
-#if 1
+#if 0
 #include <iostream>
+#include <string.h>
 using namespace std;
 /* 字符串数组 */
 // 二位数组形式的字符串数组
-// char sa[][10] = {"beijing", "tianjin", "shanghai", "chongqing"};
+// char sa[4][10] = {"beijing", "tianjin", "shanghai", "chongqing"};
 //       +=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+
 // sa[0] |  b  |  e  |  i  |  j  |  i  |  n  |  g  |  \0 |  \0 |  \0 |
 //       +=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+
@@ -771,8 +772,195 @@ using namespace std;
 //       +=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+
 // sa[.] | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... |
 //       +=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+
+
+// char* ps[4];
+// char* ps[4] = {"beijing", "tianjin", "shanghai", "chongqing"};
+// ps[0] ~ ps[4] 都是可以修改的, 但是其指向的内容不能够修改
+//        +=====+           +=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+
+// ps[0]  |  &  | --------> |  b  |  e  |  i  |  j  |  i  |  n  |  g  |  \0 |  \0 |  \0 |
+//        +=====+           +=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+
+// ps[1]  |  &  | --------> |  t  |  i  |  a  |  n  |  j  |  i  |  n  |  \0 |  \0 |  \0 |
+//        +=====+           +=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+
+// ps[2]  |  &  | --------> |  s  |  h  |  a  |  n  |  g  |  h  |  a  |  i  |  \0 |  \0 |
+//        +=====+           +=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+
+// ps[3]  |  &  | --------> |  c  |  h  |  o  |  n  |  g  |  q  |  i  |  n  |  g  |  \0 |
+//        +=====+           +=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+
+// ps[.]  |  &  | --------> | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+//        +=====+           +=====+=====+=====+=====+=====+=====+=====+=====+=====+=====+
+
+
+int main(void){
+    char* psa[4] = {0};     // 定义了一个数组, 数组有4个元素, 每个元素都是 char*类型
+    
+    // char* ps[4] = {"beijing", "tianjin", "shanghai", "chongqing"};
+
+    // 使用二维数组表示字符串数组
+    char str[3][10] = {"beijing", "tianjin", "shanghai"};
+    for(int i = 0; i < 3; i++){
+        printf("%s ", str[i]);
+    }
+    printf("\n");
+    // str[0] = "hebei";           // [ERROR] 表达式必须是可修改的左值 -> 将字符串 hebei首地址赋值给 str[0], str[0]是数组名, 无法修改
+    strcpy(str[0], "hebei");       // [ACCEPT]
+    printf("%s\n", str[0]);
+    
+    // "" 和 '' 有区别
+    // str[1][0] = "T";            // [ERROR] 不能将 "const char *"类型的值分配到 "char" 类型的实体
+    str[1][0] = 'T';               // [ACCEPT]
+    printf(str[1]);
+
+    // 字符指针数组指向字符串 - 这些字符串存储在内存的常量区
+    // 因此这些字符指针可以修改, 字符指针存储的字符串无法修改
+    char* ps[3] = {"beijing", "tianjin", "hainan"};
+    for(int i = 0; i < 3; i++){
+        printf("%s ", ps[i]);
+    }
+    printf("\n");
+    ps[0] = "hebei";                // [ACCEPT] -> 将字符串 "hebei"的首地址赋值给 ps[0], ps[0] -> "hebei"
+    // strcpy(ps[0], "hebei");      // [ERROR] Segmentation Fault: 将字符串 "hebei"拷贝到 ps[0]指向的内存, 常量区
+    printf(str[1]);
+    return 0;
+}
+#endif
+
+#if 0
+#include <iostream>
+using namespace std;
+/* 自己实现字符串比较函数 */
+// int my_strcmp(const char* s1, const char* s2){...};
+int my_strcmp(const char* s1, const char* s2){
+    // s1 > s2 返回值大于 0
+    // s1 = s2 返回值等于 0
+    // s1 < s2 返回值小于 0
+    // while(*s1) -> 得到第一个字符
+    while(*s1){
+        if(*s1 != *s2)
+            return *s1 - *s2;
+        s1++;
+        s2++;
+    }
+    return *s1 - *s2;
+}
 int main(void){
 
     return 0;
 }
 #endif
+
+#if 0
+// gcc ./filename -o ./outname
+// ./outname num_1 num_2
+#include <iostream>
+#include <string.h>
+using namespace std;
+/* main 函数的参数 */
+// 在终端中所输入的任何内容, 操作系统都会当做字符串处理
+// int main(int argc, char* argv[]){...}
+
+int main(int argc, char* argv[]){
+    // argc: 记录命令行终端输入的命令和参数的个数 (操作系统自动赋值)
+    // ./hello -> argc=1
+    // ./hello 100 200 -> argc=3
+
+    // argv: 记录命令行的终端中输入的信息对应的字符串首地址
+    // ./hello -> argv[0] -> 存储字符串 "./hello"的首地址
+    // ./hello 100 200 -> argv[0] -> 存储字符串 "./hello"的首地址
+    //                 -> argv[1] -> 存储字符串 "100"的首地址
+    //                 -> argv[2] -> 存储字符串 "200"的首地址
+    for(int i = 0; i < argc; i++){
+        printf("argc = %d, argv[%d] = %s\n", argc, i, argv[i]);
+    }
+    if(argc != 3){
+        cout << "用法: 数字1 数字2" << endl;
+        cout << "例如: 10000 20000" << endl;
+        return -1;
+    }
+
+    int a=0, b=0;
+    // atoi -> ascii to int
+    a = atoi(argv[1]);
+    b = atoi(argv[2]);
+    cout << a << ' ' << b << endl;
+    printf("sum = %d\n", a+b);
+    return 0;
+}
+#endif
+
+#if 0
+/* 预处理指令和大型程序 */
+// 编译程序的四个步骤: 预处理 -> 编译 -> 汇编 -> 链接
+// 预处理指令 - 预处理阶段会处理的指令
+
+/* #include<...> 文件包含指令 */
+// 将所包含文件的内容粘贴到该指令处
+// <...> 尖括号包含 ······················ 先找 `-l` 目录, 再找系统目录 `/usr/include`, 适用于系统头文件
+// "..." 双引号包含 ······················ 先找 `-l` 目录, 再找当前目录, 最后找系统目录 `/usr/include`, 适用于自己编写的头文件
+// gcc -E -o xxx.i xxx.c
+
+// #define
+// 无参宏定义 (常量宏)
+#define     PI          3.14
+// 有参宏定义 (宏函数)
+// 为什么是 (X)*(X)
+// 如果是 (X * X)
+// printf("%d\n", SQUARE(10));      // (10 * 10)
+// printf("%d\n", SQUARE(3+7));     // (3 + 7 * 3 + 7) 
+#define     SQUARE(X)   (X)*(X)
+
+#define     MAX(X, Y)   ((X) > (Y) ? (X) : (Y))
+
+// #undef   取消宏定义
+
+// 条件编译指令
+#include <iostream>
+using namespace std;
+
+int main(void){
+    cout << PI << endl;
+    cout << SQUARE(PI) << endl;
+// #undef MAX          // 从这一行之后所有的宏 MAX都无法使用了, 继续编译会报错
+    cout << MAX(10, 20) << endl << endl;
+    int* p = NULL;
+    if(p == NULL){
+        printf("出现了空指针:\n");
+        printf("%s %s %s %s %d", 
+                __DATE__, __TIME__, __FILE__, __FUNCTION__, __LINE__);
+        return -1;
+    }
+    return 0;
+}
+#endif
+
+// 条件编译指令
+#if 1
+// VSCODE 中修改 #define A [值]来查看结果
+#define     A       3
+#include <iostream>
+using namespace std;
+
+int main(void){
+#if A == 1
+    printf("#if A == 1\n");
+#elif A == 2
+    printf("#if A == 2\n");
+#else
+    printf("#if A is Others\n");
+#endif
+#ifndef C
+    printf("C Hasn't Been Defined\n");
+#define C 100
+#endif
+
+#ifndef C
+    printf("C Hasn't Been Defined\n");
+#else
+    printf("C Has Been Defined\n");
+#endif
+
+
+
+    return 0;
+}
+
+#endif
+

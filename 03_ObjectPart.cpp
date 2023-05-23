@@ -66,6 +66,44 @@ int main()
 #endif
 
 #if 0
+#include <iostream>
+using namespace std;
+struct Student{
+	char name[32];
+	int age;
+};
+typedef Student Stu;
+
+typedef struct Person{
+	char name[32];
+}Ps;
+
+int main(void){
+	// 定义结构体类型变量
+	struct Student s1 = {"James", 10};
+	// 标记初始化
+	Stu s2 = {.name = "ZhangSan", .age = 20};
+	cout << s1.name << ' ' << s1.age << endl;
+	cout << s2.name << ' ' << s2.age << endl;
+
+	// 定义结构体指针变量
+	struct Student* ps1 = &s1;
+	// 通过指针变量访问结构体成员语法
+	cout << ps1->name <<  ' ' << ps1->age << endl;
+	return 0;
+}
+#endif
+
+#if 1
+#include <iostream>
+using namespace std;
+
+int main(void){
+	return 0;
+}
+#endif
+
+#if 0
 // 结构体大小和字节对齐
 #include <iostream>
 using namespace std;
@@ -413,7 +451,7 @@ int main()
 #endif
 
 
-#if 1
+#if 0
 #include <iostream>
 using namespace std;
 // 继承和派生

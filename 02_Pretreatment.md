@@ -40,7 +40,6 @@
 | `__TIME__`     | 编译时间%s   |
 
 ---
-
 #### 条件编译指令
 | 条件编译指令 | 说明 |
 | :---: | :---: |
@@ -51,6 +50,25 @@
 | `#else` | 否则 |
 | `endif` | 结束判断|
 | `常量表达式` | 字面值/defined(宏名)/&&/||/! | 
+
+应用场景: 让一套代码适应于不同平台, 例如 Linux内核, 运行 x86, arm, PowerPC, mips...
+```
+cpu_init(void){
+    // 和平台无关的代码
+    ...  (90%);
+    #if ARCH == x86
+        x86_cpu 的初始化代码;
+    #elif ARCH == arm
+        arm_cpu 的初始化代码;
+    #elif ARCH == mips
+        mips_cpu 的初始化代码;
+    ...
+    #endif
+}
+```
+要想单独生成适应于 arm平台的代码:`gcc -DARCH=arm xxx.c -o xxx `
+
 ---
+
 
 

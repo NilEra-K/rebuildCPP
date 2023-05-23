@@ -931,8 +931,8 @@ int main(void){
 }
 #endif
 
-// 条件编译指令
-#if 1
+/* 条件编译指令 */
+#if 0
 // VSCODE 中修改 #define A [值]来查看结果
 #define     A       3
 #include <iostream>
@@ -956,11 +956,23 @@ int main(void){
 #else
     printf("C Has Been Defined\n");
 #endif
-
-
-
     return 0;
 }
+#endif
 
+#if 1
+#include <stdio.h>
+// 编译出现问题: Redefinition Of 'a'
+#include "02_a.h"       // int a = 520
+#include "02_b.h"       // #include "02_a.h" -> int a = 520; -> 导致重定义
+// 需要使用 
+// #ifndef _HEADER_H
+// #define _HEADER_H
+// 头文件内容
+// #endif
+int main(void){
+    printf("a = %d\n", a);
+    return 0;
+}
 #endif
 

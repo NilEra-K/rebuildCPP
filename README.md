@@ -1,5 +1,5 @@
 # rebuildCPP
-### 重构自己的 C++基础 ······················ Rebuild The Basical Part Of My C/C++
+### 重构自己的 C/C++基础 ······················ Rebuild The Basical Part Of My C/C++
 - 有一定的 C/C++基础, 准备进一步提高
 - 过于简单的部分不涉及到代码中
 - Basic 部分持续更新, 遇到值得补充的部分就进行补充

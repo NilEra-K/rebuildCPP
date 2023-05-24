@@ -960,7 +960,7 @@ int main(void){
 }
 #endif
 
-#if 1
+#if 0
 #include <stdio.h>
 // 编译出现问题: Redefinition Of 'a'
 #include "02_a.h"       // int a = 520
@@ -974,5 +974,181 @@ int main(void){
     printf("a = %d\n", a);
     return 0;
 }
+#endif
+
+/* 高级指针 */
+#if 0
+#include <stdio.h>
+/* 函数指针 */
+// 一个函数在编译时会被分配一个入口地址, 这个入口地址就称为函数的指针(地址)
+// · 函数名就是函数的地址
+// · 定义存放函数指针的指针变量, 并用函数名初始化
+//      - int add(int a, int b){...}
+//      - 返回类型 (*函数指针变量)(形参表) = 函数名;
+//      - int (*pfunc)(int, int) = add
+// · 可以像通过函数名一样通过函数指针调用函数 -> 怎么使用函数, 就怎么使用函数指针变量
+//      - 函数指针变量(实参表);
+//      - int ret = pfunc(100, 200);
+// · 函数指针可以作为函数的参数
+//      - 回调函数
+
+int add(int x, int y){
+    return x + y;
+}
+
+int sub(int x, int y){
+    return x - y;
+}
+
+int main(void){
+    printf("main(): %p\n", main);
+    printf(" add(): %p\n", add);
+    printf(" sub(): %p\n", sub);
+
+    // 如何定义一个指针变量存储函数的首地址
+    // 如何定义函数指针变量
+    int (*pfunc)(int, int) = add;
+    // 怎么使用函数, 就怎么使用函数指针变量
+    // 函数用法: int ret = add(100, 200);
+    // 函数指针用法
+    int ret = pfunc(100, 200);
+    printf("add 函数的返回值为 %d\n", ret);
+    printf("add()的地址为: %p, pfunc的地址为: %p\n", add, pfunc);
+    return 0;
+}
+#endif
+
+#if 0
+#include <stdio.h>
+// int (*pfunc)(int, int) -> 是什么数据类型 -> int (*)(int, int)型
+// 并不是系统本身存在的变量类型, 因此可以起别名
+// typedef int (*pfun_t)(int, int); // 起完别名后可以直接以 pfunc_t定义函数指针变量
+// 注意: 将新的数据类型卸载 *后
+typedef int (*pfunc_t)(int, int);
+int add(int x, int y){
+    return x + y;
+}
+
+int sub(int x, int y){
+    return x - y;
+}
+int main(void){
+    pfunc_t pfunc_1 = add;
+    pfunc_t pfunc_2 = sub;
+    int ret = pfunc_1(100, 200);
+    printf("add 函数的返回值为 %d\n", ret);
+    ret = pfunc_2(300, 50);
+    printf("sub 函数的返回值为 %d\n", ret);
+    return 0;
+}
+#endif
+
+#if 0
+#include <stdio.h>
+/* 函数指针的使用场景 */
+// 经典使用场景: 
+// 利用函数指针数组实现遍历调用所有指定函数
+// 嵌入式一般系统上电, 做一系列硬件初始化的时候 - CPU, dram, time, net, flash...
+int add(int x, int y){
+    printf("Enter %s\n", __func__);
+    return x + y;
+}
+
+int sub(int x, int y){
+    printf("Enter %s\n", __func__);
+    return x - y;
+}
+
+int mul(int x, int y){
+    printf("Enter %s\n", __func__);
+    return x * y;
+}
+
+int div(int x, int y){
+    printf("Enter %s\n", __func__);
+    return x / y;
+}
+
+int mod(int x, int y){
+    printf("Enter %s\n", __func__);
+    return x % y;
+}
+
+// 定义 int (*)(int, int) 为 pfunc_t
+typedef int (*pfunc_t)(int, int);
+// 定义函数指针数组
+pfunc_t a[] = {add, sub, mul, div, mod};
+int main(void){
+    // 比较麻烦
+    add(200, 20);
+    sub(200, 20);
+    mul(200, 20);
+    div(200, 20);
+    mod(200, 20);
+
+    // 函数指针数组,
+    int len = sizeof(a) / sizeof(a[0]);
+    pfunc_t pfunc = NULL;
+    int ret = 0;
+    for(int i = 0; i < len; i++){
+        pfunc = a[i];
+        ret = pfunc(200, 20);
+        printf("ret = %d\n\n", ret);
+    }
+    return 0;
+}
+#endif
+
+#if 0
+#include <stdio.h>
+/* 函数指针可以作为函数的参数 - 回调函数 - 函数指针彼岸两作为形参 */
+// QT的 *信号与槽机制* 就是回调函数的典型使用
+
+// 定义回调函数 add和 sub, 可以将这些函数作为函数的参数传递给其他函数
+int add(int x, int y){
+    printf("Enter %s\n", __func__);
+    return x + y;
+}
+
+int sub(int x, int y){
+    printf("Enter %s\n", __func__);
+    return x - y;
+}
+
+// 定义 cal函数, 想要使用 cal函数来调用 add函数和 sub函数
+// 将来需要通过函数指针变量来间接调用回调函数
+// 如果在某个调用函数中, 将形参设置为另一个函数的首地址, 间接调用对应的函数
+typedef int (*pfun_t)(int, int);
+int cal(int a, int b, pfun_t pfunc){
+    if(pfunc == NULL)   return a * b;
+    return pfunc(a, b);
+}
+
+int main(void){
+    // 第三个参数传递的是 add, 为 add函数的首地址, 此时的 cal函数可以间接的去调用 add函数
+    // 可以说回调函数是 QT 信号与槽引以为傲的使用方法
+    printf("%d\n", cal(100, 200, add));
+    printf("%d\n",cal(100, 200, sub));
+    printf("%d\n",cal(100, 200, NULL));    // 执行 pfunc == NULL 的代码
+
+    return 0;
+}
+#endif
+
+#if 1
+#include <stdio.h>
+/* 指针数组和数组指针 */
+// 指针数组是每个元素都是指针的数组
+int a, b, c;
+int* ptr_arr[] = { &a, &b, &c};
+
+// 数组指针是指向数组的指针
+int arr[3][4] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+int (*p)[4] = arr;
+int main(void){
+
+    return 0;
+}
+
 #endif
 

@@ -94,11 +94,40 @@ int main(void){
 }
 #endif
 
-#if 1
+#if 0
 #include <iostream>
 using namespace std;
+/* 结构体和函数的关系 */
+// - 结构体作为函数的参数
+//   建议使用指针 -> 效率更高
+//   A 函数 -> 结构体变量 -> B 函数
+//   A 函数 -> 结构体变量指针 -> B 函数
+// - 结构体作为函数的返回值
+typedef struct Student{
+	char name[32];
+	int age;
+}Stu;
+
+void show(Stu stu){
+	printf("%s, %d\n", stu.name, stu.age);
+}
+
+void grow(Stu stu){
+	stu.age++;
+}
+
+void grow_p(Stu* pstu){
+	pstu->age++;
+}
 
 int main(void){
+	Stu stu1 = {"ZhangSan", 10};
+	show(stu1);		// [Out]: ZhangSan 10
+	grow(stu1);		
+	show(stu1);		// [Out]: ZhangSan 10 -> 未发生变化
+	grow_p(&stu1);
+	show(stu1);		// [Out]: ZhangSan 11
+	
 	return 0;
 }
 #endif
@@ -168,6 +197,9 @@ struct st_2
 		+--------+--------+
 	*/
 };
+// 使用 #pragma pack(pop)可以恢复默认
+# pragma pack(pop)
+
 int main()
 {
 	cout << sizeof(st_1) << endl;		// 40
@@ -177,7 +209,7 @@ int main()
 #endif
 
 #if 0
-// 共用体 union
+// 共用体/联合体 union
 // 几个不同的变量共享同一个地址开始的内存空间。
 
 // 公用体变量初始化时, 只能对第一个成员赋值(原因与共用体的特性有关)
@@ -188,9 +220,9 @@ int main()
 // union 共同体类型名
 // {
 //     成员类型1 成员名1;
-// 	成员类型2 成员名2;
-// 	... ...
-// 	成员类型n 成员名n;
+// 	   成员类型2 成员名2;
+// 	   ... ...
+// 	   成员类型n 成员名n;
 // };
 
 // C++ 17 提供了 variant, 可以实现 Union 类似的效果, 并且会自动析构
@@ -211,6 +243,100 @@ int main()
 	x.c = 'c';
 	cout << x.i <<" "<< x.f << " " << x.c << endl;//99 1.38729e-43 c
     return 0;
+}
+#endif
+
+#if 0
+#include <stdio.h>
+// 联合是对同一块内存的不同是哟个方式
+int main(void){
+	// 直接定义联合体变量 mb, 分配四个字节
+	union {
+		unsigned int u_n;
+		unsigned char u_c[4];
+	}mb;
+	// __   __   __   __
+	// 0x78 0x56 0x34 0x12	u_n
+	mb.u_n = 0x12345678;	// 向 4个字节内存中写入了数据 0x12345678
+	for(int i = 0; i < 4; i++){
+		// 这里与主机字节序有关系 -> 大端模式与小端模式
+		// 一般来说, 我们的个人计算机都是小端模式
+		// mb.u_n = 1;	// 4字节 0x00000001
+		//     +====+====+====+====+
+		//     |0x01|0x00|0x00|0x00|	小端方式
+		//     +====+====+====+====+
+		//L -> 0    1    2    3    4 -> H(High)高地址
+
+		printf("%#x ", mb.u_c[i]);		// 0x78 0x56 0x34 0x12	u_c
+	}
+	printf("\n");
+
+	mb.u_c[2] = 0x43;
+	for(int i = 0; i < 4; i++){
+		printf("%#x ", mb.u_n);			// 0x12435678	u_n
+	}
+	printf("\n");
+	// 可以看出联合体公用内存空间
+	return 0;
+}
+#endif
+
+#if 0
+#include <stdio.h>
+/* 联合体到底有什么用 */
+// 经典使用场景:
+// 数据传输 -> 传统方式
+//		unsigned char buf[48];
+// A 给 B 发送数据, 数据一共有 48个字节
+// 		包含信息:
+// 		- 4字节的数据头
+// 		- 40字节的数据本身
+// 		- 4字节的数据尾
+
+// 联合套结构体 -> A给 B发送数据, B使用联合体解析数据
+union msg{
+	unsigned char buf[48];
+	struct cmd{
+		unsigned char head[4];
+		unsigned char data[40];
+		unsigned char tail[4];
+	}cmd_info;
+}ms;
+
+// 声明结构体数据类型
+typedef struct person{
+	char name[32];
+	char sex;	// 'm' | 'f'
+	char job;	// 's' | 't'
+	union{	// 教授和学生杂糅在一起
+		int classnum;
+		char position[10];
+	}category;
+}per_t;
+
+int main(void){
+	ms.cmd_info.data;	// 直接获取 40字节
+	per_t p[2] = {
+		// 出现错误, 暂时没有解决方案
+		{.name = "XiaoMing", .sex = 'm', .job = 's', .category.classnum = 10},
+		{.name = "ZhangSan", .sex = 'f', .job = 't', .category.position = "教授"}
+	};
+	for(int i = 0; i < 2; i++){
+		if(p[i].job == 's'){
+			printf("姓名: %s, 性别: %c, 班级: %d\n", p[i].name, p[i].sex, p[i].category.classnum);
+		} else {
+			printf("姓名: %s, 性别: %c, 职称: %s\n", p[i].name, p[i].sex, p[i].category.position);
+		}
+	}
+	return 0;
+}
+#endif
+
+#if 1
+#include <stdio.h>
+int main(void){
+
+	return 0;
 }
 #endif
 

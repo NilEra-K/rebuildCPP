@@ -24,6 +24,41 @@ int main()
 }
 #endif
 
+#if 0
+#include <stdio.h>
+/* 枚举 - enum - 提高代码可读性 */
+// 枚举是一个整形常量的列表, 每个枚举值都是一个符号常量
+// 默认从 0 开始, 可以通过赋值改变
+// 没有赋值的枚举值 = 上一个枚举值 + 1
+// 语法格式:
+// enum 枚举类型名 { 枚举值列表 };
+// 例如: enum COLOR { RED, GREEN, YELLOW };
+// RED = 0, GREEN = 1, YELLOW = 2   // 其实就是给 0, 1, 2起别名
+enum COLOR { GREEN, RED, YELLOW };
+int main(void){
+    printf("%d %d %d\n", GREEN, RED, YELLOW);
+    return 0;
+}
+#endif
+
+#if 0
+#include <stdio.h>
+
+enum RETURN { OK, FAILED };
+int check(int a){
+    if(a != 0){
+        // printf("SUCCESS");
+        return OK;
+    } else {
+        // printf("FAILED");
+        return FAILED;
+    }
+}
+int main(void){
+
+    return 0;
+}
+#endif
 
 #if 0
 // 参考相关 Blog:

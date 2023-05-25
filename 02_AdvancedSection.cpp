@@ -1194,13 +1194,12 @@ int main(void){
 }
 #endif
 
-#if 1
+#if 0
 #include <stdio.h>
 /* 二级指针与多级指针 */
 // 指针变量的地址即指针的指针
 // 将一级指针变量的地址保存在另一个指针变量中即构成二级指针
 // 二级指针是指向一级指针的指针
-// 常用二级指针的函数形参, 接受一级指针地址形式的实参, 以修改调用者指针的目标, 或将其分配资源
 // 对一维数组的数组名取地址, 得到的不是二级指针, 而是数组指针
 int main(void){
     int a = 100;
@@ -1213,6 +1212,252 @@ int main(void){
     /* [Out] 观察下面的输出可以发现, pp正是 &p, 对 pp解引用正是 p */
     // p = 000000874f5ff85c, &p = 000000874f5ff850, *p = 100
     // &pp = 000000874f5ff848, pp = 000000874f5ff850, *pp = 000000874f5ff85c, **pp = 100
+
+    return 0;
+}
+#endif
+
+#if 0
+#include <stdio.h>
+// 常用二级指针的函数形参, 接受一级指针地址形式的实参, 以修改调用者指针的目标, 或将其分配资源
+// 实现字符串的交换 - 定义 swap函数实现 pa和 pb指向的交换
+// char* pa = "hello";
+// char* pb = "world";
+
+// swap_w 无法实现交换
+// 类比实现 swap值交换时, 需要用到一级指针
+// 那么实现 swap指针交换时, 指针就是值, 因而需要二级指针
+void swap_w(char* pa, char* pb){
+    char* tmp = pa;
+    pa = pb;
+    pb = tmp;
+}
+
+// 如果想在一个函数中修改一个指针的内容, 必须传递二级指针
+void swap(char** psa, char** psb){
+    // psa = &pa -> *psa = *(&pa) = pa
+    // psb = &pb -> *psb = *(&pb) = pb
+    char* tmp = *psa;
+    *psa = *psb;
+    *psb = tmp;
+}
+
+int main(void){
+    char* pa = "hello";
+    char* pb = "world";
+    swap(&pa, &pb);
+    printf("pa = %s, pb = %s\n", pa, pb);
+    return 0;
+}
+#endif
+
+#if 0
+#include <stdio.h>
+/* 二级指针- 字符指针数组 */
+int main(void){
+    // arr[0] 是字符串 "hello"的首地址
+    // arr[1] 是字符串 "world"的首地址
+    // 而 arr也是一个地址 - 所以 arr有二级指针的特点
+    // 可以定义一个二级指针变量保存字符指针数组的首地址
+
+    char* arr[] = {"hello", "world"};
+    printf("%s, %s\n", arr[0], arr[1]);
+    char** p = arr;
+    printf("%s, %s\n", p[0], p[1]);
+    return 0;
+}
+#endif
+
+#if 0
+#include <stdio.h>
+/* malloc动态分配内存 */
+// 需要包含头文件 stdlib.h
+#include <stdlib.h>
+// 除了{变量, 数组, 结构体}外, 分配内存的第四种方法
+// 变量, 数组, 结构体都属于静态分配内存的方式 - 占用的内存空间大小再代码编辑的时候就已经完全确定了
+// 如何做到动态内存分配
+// malloc - memory allocation - 内存分配
+// void* malloc(size_t size);   // 分配 size个字节的内存空间 - 在堆区当中
+// 堆区的特点: 直到使用 free函数将其内存空间释放 || 程序结束释放
+// 返回值: void* -> 返回分配内存的首地址, 如果分配失败返回NULL
+
+// free - 释放内存
+// void free(void* ptr);
+// 释放 ptr所指向的动态内存
+// ptr必须是之前 malloc/calloc/realloc函数的返回值
+// 释放一块已经被释放过的内存, 将导致未定义的后果
+// 若 ptr取 NULL将不进行任何操作
+// 所有通过动态内存分配得到的内存都必须释放, 否则将导致 **内存泄漏**
+int main(void){
+    // 在堆区中分配 8个字节
+    // void* p = malloc(8);
+    // -> int* p = (int*)malloc(8);
+    int* p = NULL;
+    p = (int*)malloc(8);
+    if(NULL == p){
+        printf("Memory Allocation Failed \n");
+        return -1;
+    }
+    printf("Memory Allocation Success \n");
+    // 对内存进行操作
+    *(p + 0) = 100;
+    *(p + 1) = 200;
+    printf("%d, %d \n", p[0], p[1]);
+    printf("%d, %d \n", *(p + 0), *(p + 1));
+    // 不再使用分配的内存空间的时候, 将这块内存空间释放
+    free(p);    // 释放在堆区中所分配的内存
+    p = NULL;   // 释放内存后, 需要将指针 p设置为空指针, 避免出现野指针
+    return 0;
+}
+#endif
+
+#if 0
+#include <stdio.h>
+#include <stdlib.h>
+/* 分配数组并初始化 calloc - clear allocation */
+// void* calloc(size_t nmemb, size_t size);
+// 从堆中分配包含 nmemb个元素的数组, 其中每个元素占 size字节
+// 成功分配返回该数组的起始地址, 失败返回 NULL
+// 对所分配数组的每个元素, 用相应类型的 0 进行初始化
+int main(void){
+    int* p = NULL;
+    p = (int*)calloc(4, sizeof(int));
+    if(p == NULL){
+        printf("Memory Allocation Failed \n");
+        return -1;
+    }
+    printf("Memory Allocation Success: %p\n", p);
+    // 将 p看作数组名
+    for(int i = 0; i < 4; i++){
+        p[i] = i + 100;
+    }
+    // 打印数组的内存值
+    for(int i = 0; i < 4; i++){
+        printf("%d ", *(p + i));
+    }
+    printf("\n");
+    free(p);
+    p = NULL;
+    return 0;
+}
+#endif
+
+#if 0
+#include <stdio.h>
+#include <stdlib.h>
+/* realloc - reset alloctaion 调整分配内存的大小 */
+// 需要和 malloc和 calloc配套使用
+// void* realloc(void* ptr, size_t size);
+// 如果 size = 0, 则等于 free()函数
+// 将 ptr所指向的动态内存调整为 size字节, 原内容保持不变, 对新内容不作初始化
+// 成功返回调整后内存块的起始地址, 失败返回 NULL
+// ptr必须是之前 malloc/calloc/realloc函数的返回值
+int main(void){
+    int* p = NULL;
+    p = (int*)malloc(8);
+    if(NULL == p){
+        printf("Memory Allocation Failed \n");
+        return -1;
+    }
+    printf("Memory Allocation Success \n");
+    // 对内存进行操作
+    *(p + 0) = 100;
+    *(p + 1) = 200;
+    printf("%d, %d \n", p[0], p[1]);
+    printf("%d, %d \n", *(p + 0), *(p + 1));
+    p = (int *)realloc(p, 16);
+    for(int i = 0; i < 4; i++){
+        p[i] = i + 50;
+        printf("%d ", p[i]);
+    }
+    printf("\n");
+    // 不再使用分配的内存空间的时候, 将这块内存空间释放
+    free(p);    // 释放在堆区中所分配的内存
+    p = NULL;   // 释放内存后, 需要将指针 p设置为空指针, 避免出现野指针
+
+    return 0;
+}
+#endif
+
+#if 0
+#define     NUM     4
+#include <stdio.h>
+#include <stdlib.h>
+// 想要存储 NUM个员工的信息, 分配 NUM个 emp_t类型的存储区
+typedef struct employee{
+    char name[32];
+    int age;
+}emp_t;
+
+emp_t* get_employee_info(void){
+    emp_t* p = (emp_t *)malloc(sizeof(emp_t) * NUM);
+    emp_t* ptmp = p;
+    // 完成员工信息的初始化
+    for(int i = 0; i < NUM; i++){
+        printf("请输入员工姓名: ");
+        scanf("%s", p->name);
+        printf("请输入员工年龄: ");
+        scanf("%d", &p->age);   // p->age 是int型, 使用 printf/scanf 时需要 &符
+        p++;
+    }
+    return ptmp;
+}
+
+int main(void){
+    // 定义函数分配初始化员工信息的内存
+    emp_t* p = get_employee_info();
+    for(int i = 0; i < NUM; i++){
+        printf("%s, %d\n", p[i].name, p[i].age);
+    }
+    free(p);
+    return 0;
+}
+#endif
+
+#if 0
+#include <stdio.h>
+#include <stdlib.h>
+// 声明一个点的坐标的结构体
+typedef struct{
+    int r;
+    int c;
+}pt;
+
+// 声明描述两个点坐标的结构体
+typedef struct{
+    pt p1;
+    pt p2;
+}rect;
+
+pt* midpt(const rect* p){
+    pt* pmid = (pt *)malloc(sizeof(pt));
+    if(pmid){
+        pmid->r = (p->p1.r + p->p2.r) / 2;
+        pmid->c = (p->p1.c + p->p2.c) / 2;
+    }
+    return pmid;
+}
+
+int main(void){
+    rect r = {0};   // 定义了结构体, 具有了两个点
+    printf("请输入两个点的坐标: ");
+    scanf("%d%d%d%d", &(r.p1.r), &(r.p1.c), &(r.p2.r), &(r.p2.c));
+    pt* p_mid = midpt(&r);
+    if(p_mid){
+        printf("中心点的位置是(%d, %d)\n", p_mid->r, p_mid->c);
+        free(p_mid);
+        p_mid = NULL;
+    }
+    return 0;
+}
+#endif
+
+#if 1
+/* 文件操作 */
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(void){
 
     return 0;
 }

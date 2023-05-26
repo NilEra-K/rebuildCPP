@@ -1452,14 +1452,108 @@ int main(void){
 }
 #endif
 
-#if 1
-/* 文件操作 */
+#if 0
+/* C 文件操作 */
+// fopen - 打开文件
+// fclose - 关闭文件
 #include <stdio.h>
 #include <stdlib.h>
-
+// struct _iobuf {
+//     char *_ptr;         // 文件输入的下一个位置
+//     int _cnt;           // 当前缓冲区的相对位置
+//     char *_base;        // 指基础位置(文件的起始位置)
+//     int _flag;          // 文件标志
+//     int _file;          // 文件的有效性验证
+//     int _charbuf;       // 检查缓冲区状况
+//     int _bufsiz;        // 文件的大小
+//     char *_tmpfname;    // 临时文件名
+// };
+// typedef struct _iobug FILE;
+/* ========================================================== */
+/* I/O流的打开 */
+// 打开模式(6种)
+// r - read | w - write | a - append 
+// r => 只读, 文件必须存在, 从头开始读
+// w => 只写, 文件不存在就创建, 存在就清空, 从头开始写
+// a => 追加, 文件不存在就创建, 存在不清空, 从尾开始写
+// r+ => 读写, 文件必须存在, 从头开始读写
+// w+ => 写读, 文件不存在就创建, 存在就清空, 从头开始写读
+// a+ => 追读, 文件不存在就创建, 存在不清空, 从头开始读, 从尾开始写 
+// FILE* fopen(
+//     const char* path,   // 文件路径
+//     const char* mode    // 打开模式
+// );
+/* ========================================================== */
+/* I/O流的关闭 */
+// 成功返回0, 失败返回 EOF
+// int fclose(
+//     FILE* fp    // I/O流指针
+// );
+/* ========================================================== */
 int main(void){
+    FILE* fp = NULL;
+    fp = fopen("a.txt", "w");
+    if(fp == NULL){
+        printf("Open Failed...");
+        return 0;
+    }
+    printf("Open Successed...");
 
+    // 关闭文件
+    fclose(fp);
+    fp = NULL;
     return 0;
 }
 #endif
 
+#if 1
+/* C 文件输入输出操作 */
+#include <stdio.h>
+#include <stdlib.h>
+// 格式化输出
+// int fprintf (
+//     FILE* stream,           // I/O流指针
+//     const char* format,     // 格式字符串
+//     ...                     // 输出数据
+// );
+// fprintf(fp, "%d", 520);
+/* ============================================== */
+// 格式化输入
+// 成功返回实际输入的数据项数, 失败或遇到文件尾返回EOF
+// int fscanf (
+//     FILE* stream,           // I/O流指针
+//     const char* format,     // 格式字符串
+//     ...                     // 输入数据
+// );
+// fscanf(fp, "%d", &a);
+/* ============================================== */
+int main(void){
+    // 创建打开 a.txt, 向 a.txt中写入: 2023 Hello 100.01
+    // 1. 从 a.txt中将内容全部读取到变量中, 输入到屏幕上
+    // 2. 将三个变量中的内容输出到 b.txt文件中
+    FILE* fp = NULL;
+    // 打开文件
+    fp = fopen("a.txt", "r");   // 以只读的方式打开当前文档
+    if(NULL == fp){
+        printf("File Open Failed...");
+        return -1;
+    }
+    // 定义变量存储从文件中读取的内容;
+    int i = 0;
+    char str[20] = {0};
+    double d = 0;
+
+    // 按照一定的格式从 a.txt文件中读取数据保存到变量 i, str, d中
+    fscanf(fp, "%d%s%lg", &i, str, &d);
+    printf("i = %d, str = %s, d = %lg\n", i, str, d);
+
+    // 关闭文件
+    fclose(fp);
+    fp = NULL;
+
+    FILE* fpw = fopen("b.txt", "w+");
+    fprintf(fpw, "%d, %s, %lg\n", i, str, d);
+    fclose(fpw);
+    return 0;
+}
+#endif
